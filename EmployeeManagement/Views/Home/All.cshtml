@@ -1,0 +1,20 @@
+﻿@model List<Employee>
+
+<div class="row">
+	@foreach (var item in Model)
+	{
+		var photoPath = "~/images/" + (item.PhotoPath ?? "profile.png");
+	<div class="col">
+		<div class="card mt-3" style="width: 18rem;">
+			<img class="card-img-top details-image-small" src="@photoPath" alt="Card image cap" asp-append-version>
+			<div class="card-body">
+				<h5 class="card-title">@item?.Name</h5>
+				<p class="card-text">@item?.Department</p>
+				<a asp-controller="Home" asp-action="Index" asp-route-id="@item?.Id" class="btn btn-primary">Details</a>
+			</div>
+		</div>
+
+	</div>
+	}
+</div>
+

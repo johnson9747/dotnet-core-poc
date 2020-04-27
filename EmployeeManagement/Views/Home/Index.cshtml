@@ -1,0 +1,15 @@
+﻿@model Employee
+@{
+	ViewBag.Title = "Employee Details";
+	var photoPath = "~/images/" + (Model.PhotoPath ?? "profile.png");
+}
+<div class="card" style="width: 18rem;">
+	<img class="card-img-top details-image" src="@photoPath" alt="Card image cap" asp-append-version>
+	<div class="card-body">
+		<h5 class="card-title">@Model?.Name</h5>
+		<p class="card-text">Department: @Model?.Department</p>
+		<a asp-controller="Home" asp-action="All" class="btn btn-primary m-1">Show All</a>
+		<a asp-controller="home" asp-action="edit" asp-route-id="@Model.Id"
+		   class="btn btn-primary m-1">Edit</a>
+	</div>
+</div>
