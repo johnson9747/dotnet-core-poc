@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using EmployeeManagement.Models;
 using EmployeeManagement.Services;
 using EmployeeManagement.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 
@@ -39,11 +40,13 @@ namespace EmployeeManagement.Controllers
 			return View(employees);
 		}
 		[HttpGet]
+		[Authorize]
 		public ViewResult Create()
 		{
 			return View();
 		}
 		[HttpPost]
+		[Authorize]
 		public IActionResult Create(EmployeeCreateViewModel model)
 		{
 			if (ModelState.IsValid)

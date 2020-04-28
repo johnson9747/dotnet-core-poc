@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using EmployeeManagement.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
@@ -44,7 +45,7 @@ namespace EmployeeManagement.Controllers
 				if (result.Succeeded)
 				{
 					await signInManager.SignInAsync(user, isPersistent: false);
-					return RedirectToAction("index", "all");
+					return RedirectToAction("all", "home");
 				}
 
 				// If there are any errors, add them to the ModelState object
@@ -70,7 +71,7 @@ namespace EmployeeManagement.Controllers
 		}
 
 		 [HttpPost]
-        public async Task<IActionResult> Login(LoginViewModel model)
+        public async Task<IActionResult> Login(LoginViewModel model, string returnUrl)
         {
             if (ModelState.IsValid)
             {
@@ -79,7 +80,14 @@ namespace EmployeeManagement.Controllers
 
                 if (result.Succeeded)
                 {
-                    return RedirectToAction("all", "home");
+					if (!string.IsNullOrEmpty(returnUrl)&& Url.IsLocalUrl(returnUrl))
+					{
+						return Redirect(returnUrl);
+					}
+					else
+					{
+						return RedirectToAction("all", "home");
+					}                    
                 }
 
                 ModelState.AddModelError(string.Empty, "Invalid Login Attempt");
@@ -87,5 +95,20 @@ namespace EmployeeManagement.Controllers
 
             return View(model);
         }
-	}
+		[AcceptVerbs("Get", "Post")]
+		[AllowAnonymous]
+		public async Task<IActionResult> IsEmailInUse(string email)
+		{
+			var user = await userManager.FindByEmailAsync(email);
+
+			if (user == null)
+			{
+				return Json(true);
+			}
+			else
+			{
+				return Json($"Email {email} is already in use.");
+			}
+		}
+		}
 }
