@@ -67,7 +67,7 @@ namespace EmployeeManagement.Controllers
 		}
 
 		// Role ID is passed from the URL to the action
-		[HttpGet]
+		[HttpGet]		
 		public async Task<IActionResult> EditRole(string id)
 		{
 			// Find the role by Role ID
@@ -331,6 +331,7 @@ namespace EmployeeManagement.Controllers
 			}
 		}
 		[HttpGet]
+		[Authorize(Policy = "EditRolePolicy")]
 		public async Task<IActionResult> ManageUserRoles(string userId)
 		{
 			ViewBag.userId = userId;

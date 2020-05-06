@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using EmployeeManagement.Models;
+using EmployeeManagement.Security;
 using EmployeeManagement.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -40,11 +42,17 @@ namespace EmployeeManagement
 			{
 				options.AddPolicy("DeleteRolePolicy",
 					policy => policy.RequireClaim("Delete Role"));
+				options.AddPolicy("EditRolePolicy", policy =>
+			policy.AddRequirements(new ManageAdminRolesAndClaimsRequirement()));
 			});
 			services.ConfigureApplicationCookie(options =>
 			{
 				options.AccessDeniedPath = new PathString("/Administration/AccessDenied");
 			});
+
+			services.AddSingleton<IAuthorizationHandler,CanEditOnlyOtherAdminRolesAndClaimsHandler>();
+			// Register the second handler
+			services.AddSingleton<IAuthorizationHandler, SuperAdminHandler>();
 			services.AddSingleton<ITest, RealTest>();
 			services.AddScoped<IEmployeeRepository, SQLEmployeeRepository>();
 		}
